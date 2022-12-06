@@ -1,7 +1,7 @@
 import { loadFileAsStringArrayOfLines } from "../common/fileLoading"
 import { Stack } from "./stack"
 
-function partOne(filepath : string) {
+function main(filepath : string, isCrateMover9001: boolean) {
     let contents = loadFileAsStringArrayOfLines(filepath);
 
     let instructionsStack : Stack<[number, number, number]> = new Stack<[number, number, number]>();
@@ -63,10 +63,29 @@ function partOne(filepath : string) {
         let numCratesToMove = instructions ? instructions[0] : 0;
         let sourceColumn = instructions ? instructions[1] - 1 : 0;
         let targetColumn = instructions ? instructions[2] - 1 : 0;
-        for (let j = 0; j < numCratesToMove; j++) {
-            let crate = crateStackArray[sourceColumn].pop();
-            if (crate !== undefined) {
-                crateStackArray[targetColumn].push(crate);
+        
+        if (isCrateMover9001) {
+            let tempStack:  Stack<string> = new Stack<string>();
+            for (let j = 0; j < numCratesToMove; j++) {
+                let crate = crateStackArray[sourceColumn].pop();
+                if (crate !== undefined) {
+                    tempStack.push(crate);
+                }
+            }
+
+            while (tempStack.size() > 0) {
+                let crate = tempStack.pop();
+                if (crate !== undefined) {
+                    crateStackArray[targetColumn].push(crate);
+                }            
+            }
+        }
+        else {
+            for (let j = 0; j < numCratesToMove; j++) {
+                let crate = crateStackArray[sourceColumn].pop();
+                if (crate !== undefined) {
+                    crateStackArray[targetColumn].push(crate);
+                }
             }
         }
     }
@@ -85,4 +104,4 @@ function partOne(filepath : string) {
 
 //let filepath = "../../data/05/test_05.txt";
 let filepath = "../../data/05/data_05.txt";
-partOne(filepath);
+main(filepath, true);
