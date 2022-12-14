@@ -2,6 +2,7 @@ import { loadFileAsStringArrayOfLines } from "../common/fileLoading"
 import { InstructionState, NoopInstructionState, AddxInstructionState} from "./instructions"
 import { MachineState } from "./machineState"
 import { SignalStrengthMeasurer } from "./signalStrengthMeasurer"
+import { CRTRenderer } from './crtRenderer'
 
 function main(filepath: string) {
     let instructionsArray = loadFileAsStringArrayOfLines(filepath);
@@ -13,6 +14,7 @@ function main(filepath: string) {
     let machineState = new MachineState();
 
     let signalStrengthMeasurer = new SignalStrengthMeasurer();
+    let crtRenderer = new CRTRenderer();
 
     let instructionIndex: number = 0;
     while (instructionIndex < instructionsArray.length) {
@@ -29,6 +31,7 @@ function main(filepath: string) {
                 machineState.cycle++;
 
                 signalStrengthMeasurer.checkSignalStrengthFromMachineState(machineState);
+                crtRenderer.render(machineState);
             }
 
             if (instruction.onExecute) {
@@ -40,6 +43,7 @@ function main(filepath: string) {
     }
 
     console.log("Target signal strength sum = " + signalStrengthMeasurer.getSum());
+    crtRenderer.printOutput();
 }
 
 //let filepath = "../../data/10/test_10.txt";
